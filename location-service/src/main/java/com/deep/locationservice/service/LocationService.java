@@ -25,7 +25,8 @@ public class LocationService {
     private static final String DRIVER_GEO_KEY = "drivers:locations";
 
     /**
-     *
+     * Update driver location call every 3 sec
+     * Maps GEOADD command
      * @param driverLocationRequest
      */
     public void updateDriverLocation(DriverLocationRequest driverLocationRequest) {
@@ -73,7 +74,7 @@ public class LocationService {
                                 .includeCoordinates()
                                 .includeDistance()
                                 .sortAscending()
-                                .limit(10);
+                                .limit(10)
                 );
 
         List<NearByDriverResponse> nearByDrivers = new ArrayList<>();
@@ -90,16 +91,18 @@ public class LocationService {
         }
 
         log.info("Found {} drivers nearby", nearByDrivers.size());
-    }
-
-    public void removeDriverByDriverId(String driverId) {
-
+        return nearByDrivers;
     }
 
     /**
-     * Update driver location call every 3 sec
-     * Maps GEOADD command
+     * Remove driver when they go offline
+     * Maps to Redis ZREM command
+     * @param driverId
      */
+    public void removeDriverByDriverId(String driverId) {
+        log.info("Removing driver: {}", driverId);
+        redisTemplate.opsForGeo().remove(DRIVER_GEO_KEY, driverId);
+    }
 
 
 }
