@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -74,6 +76,20 @@ public class RideService {
         rideRepository.save(ride);
     }
 
+    public RideResponse startRide(String rideId){
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RuntimeException("Ride not found"));
+
+        if(ride.getStatus() != RideStatus.ACCEPTED){
+            throw new RuntimeException("Ride cannot be started!! Current status: " + ride.getStatus());
+        }
+
+        ride.setStatus(RideStatus.RIDE_STARTED);
+        ride.setStartedAt(LocalDateTime.now());
+        rideRepository.save(ride);
+
+        return mapToResponse(ride);
+    }
 
     private RideResponse mapToResponse(Ride ride){
         return new RideResponse(
