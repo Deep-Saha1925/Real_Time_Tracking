@@ -12,6 +12,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -115,6 +117,20 @@ public class RideService {
         rideRepository.save(ride);
 
         return mapToResponse(ride);
+    }
+
+    public RideResponse getRideById(String rideId){
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RuntimeException("Ride not found"));
+
+        return mapToResponse(ride);
+    }
+
+    public List<RideResponse> getRidesByRiderId(String riderId){
+        return rideRepository.findByRiderIdOrderByCreatedAtDesc(riderId)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 
     private RideResponse mapToResponse(Ride ride){
