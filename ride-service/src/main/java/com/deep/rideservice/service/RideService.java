@@ -43,7 +43,21 @@ public class RideService {
         // Step 2: Publish event to Kafka
         // Matching serving will fetch and find nearest rider
 
+        RideRequestEvent event = new RideRequestEvent(
+                savedRide.getId(),
+                savedRide.getRiderId(),
+                savedRide.getPickupLatitude(),
+                savedRide.getPickupLongitude(),
+                savedRide.getPickupAddress(),
+                savedRide.getPickupLatitude(),
+                savedRide.getDropLongitude(),
+                savedRide.getDropAddress()
+        );
 
+        kafkaTemplate.send(RIDE_REQUESTED_TOPIC, savedRide.getId(), event);
+        log.info("Ride request published to kafka for ride: {}", savedRide.getId());
+
+        // Update status to matching
     }
 
 
