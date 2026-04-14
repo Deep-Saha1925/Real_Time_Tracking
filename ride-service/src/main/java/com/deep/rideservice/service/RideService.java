@@ -91,6 +91,32 @@ public class RideService {
         return mapToResponse(ride);
     }
 
+    public RideResponse completeRide(String rideId){
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RuntimeException("Ride not found"));
+
+        if(ride.getStatus() != RideStatus.RIDE_STARTED){
+            throw new RuntimeException("Ride cannot be completed!! Current status: " + ride.getStatus());
+        }
+
+        ride.setStatus(RideStatus.COMPLETED);
+        ride.setCompletedAt(LocalDateTime.now());
+        ride.setActualFare(ride.getEstimatedFare());
+        rideRepository.save(ride);
+
+        return mapToResponse(ride);
+    }
+
+    public RideResponse cancelRide(String rideId){
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RuntimeException("Ride not found"));
+
+        ride.setStatus(RideStatus.CANCELLED);
+        rideRepository.save(ride);
+
+        return mapToResponse(ride);
+    }
+
     private RideResponse mapToResponse(Ride ride){
         return new RideResponse(
                 ride.getId(),
