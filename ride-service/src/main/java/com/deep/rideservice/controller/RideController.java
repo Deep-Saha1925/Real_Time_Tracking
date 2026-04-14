@@ -29,7 +29,6 @@ public class RideController {
             @Valid
             @RequestBody RideRequest rideRequest
             ){
-        log.info("Ride questing received from rider: {}", rideRequest.getRiderId());
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(rideService.requestRide(rideRequest));
