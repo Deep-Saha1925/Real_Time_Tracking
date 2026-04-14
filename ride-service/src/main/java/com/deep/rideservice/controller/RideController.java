@@ -35,16 +35,37 @@ public class RideController {
                 .body(rideService.requestRide(rideRequest));
     }
 
-    @GetMapping("/rider/{rideId}")
+    @GetMapping("/{rideId}")
     public ResponseEntity<RideResponse> getRideById(@PathVariable String rideId){
         return ResponseEntity.ok(rideService.getRideById(rideId));
     }
 
     // Get rides for rider
+    @GetMapping("/rider/{riderId}")
     public ResponseEntity<List<RideResponse>> getRidesByRiderId(
             @PathVariable String riderId
     ){
         return ResponseEntity.ok(rideService.getRidesByRiderId(riderId));
     }
+
+
+    //Driver starts ride
+    @PostMapping("/{rideId}/start")
+    public ResponseEntity<RideResponse> startRide(
+            @PathVariable String rideId
+    ){
+        return ResponseEntity.ok(rideService.startRide(rideId));
+    }
+
+
+    //complete ride
+    @PostMapping("/{rideId}/complete")
+    public ResponseEntity<RideResponse> completeRide(
+            @PathVariable String rideId
+    ){
+        return ResponseEntity.ok(rideService.completeRide(rideId));
+    }
+
+
 
 }
