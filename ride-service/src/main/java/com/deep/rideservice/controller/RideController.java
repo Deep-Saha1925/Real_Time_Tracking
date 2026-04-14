@@ -66,6 +66,12 @@ public class RideController {
         return ResponseEntity.ok(rideService.completeRide(rideId));
     }
 
-
+    //cancel ride
+    @PostMapping("/{rideId}/cancel")
+    public ResponseEntity<RideResponse> cancelRide(
+            @PathVariable String rideId
+    ){
+        return ResponseEntity.ok(rideService.cancelRide(rideId));
+    }
 
 }
