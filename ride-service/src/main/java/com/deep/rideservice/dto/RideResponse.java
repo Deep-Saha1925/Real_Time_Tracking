@@ -15,20 +15,16 @@ public class RideResponse {
     private String id;
 
     private String riderId;
-
     private String driverId;
 
     private double pickupLatitude;
-
     private double pickupLongitude;
-
     private String pickupAddress;
 
     private double dropLatitude;
-
     private double dropLongitude;
-
     private String dropAddress;
+
     private RideStatus status;
 
     private double estimatedFare;

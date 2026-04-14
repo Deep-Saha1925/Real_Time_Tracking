@@ -58,7 +58,32 @@ public class RideService {
         log.info("Ride request published to kafka for ride: {}", savedRide.getId());
 
         // Update status to matching
+        savedRide.setStatus(RideStatus.MATCHING);
+        rideRepository.save(savedRide);
+
+        return mapToResponse(savedRide);
     }
 
+    private RideResponse mapToResponse(Ride ride){
+        RideResponse response = new RideResponse(
+                ride.getId(),
+                ride.getRiderId(),
+                ride.getDriverId(),
+                ride.getPickupLatitude(),
+                ride.getPickupLongitude(),
+                ride.getPickupAddress(),
+                ride.getPickupLatitude(),
+                ride.getDropLongitude(),
+                ride.getDropAddress(),
+                ride.getStatus(),
+                ride.getEstimatedFare(),
+                ride.getActualFare(),
+                ride.getCreatedAt(),
+                ride.getCompletedAt(),
+                ride.getStartedAt(),
+                ride.getCompletedAt()
+        );
+        return response;
+    }
 
 }
