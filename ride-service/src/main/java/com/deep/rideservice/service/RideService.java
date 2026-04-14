@@ -64,8 +64,19 @@ public class RideService {
         return mapToResponse(savedRide);
     }
 
+    // Will be called by the matching service to change status
+    public void updateRideWithDriver(String rideId, String driverId){
+        Ride ride = rideRepository.findById(rideId)
+                .orElseThrow(() -> new RuntimeException("Ride not found"));
+
+        ride.setDriverId(driverId);
+        ride.setStatus(RideStatus.ACCEPTED);
+        rideRepository.save(ride);
+    }
+
+
     private RideResponse mapToResponse(Ride ride){
-        RideResponse response = new RideResponse(
+        return new RideResponse(
                 ride.getId(),
                 ride.getRiderId(),
                 ride.getDriverId(),
@@ -83,7 +94,6 @@ public class RideService {
                 ride.getStartedAt(),
                 ride.getCompletedAt()
         );
-        return response;
     }
 
 }
