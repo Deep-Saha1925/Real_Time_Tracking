@@ -13,7 +13,7 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic rideRequestedTopic(){
-        return TopicBuilder.name("ride.requetted")
+        return TopicBuilder.name("ride.requested")
                 .partitions(3)
                 .replicas(1)
                 .build();
@@ -22,4 +22,12 @@ public class KafkaConfig {
 
     // Topic where matching service published match results
     // Ride service subscribe to this topic
+
+    @Bean
+    public NewTopic rideMatchTopic(){
+        return TopicBuilder.name("ride.matched")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
 }
