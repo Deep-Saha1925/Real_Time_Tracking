@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,6 +75,38 @@ public class RideEventConsumer {
 
         kafkaTemplate.send(RIDE_MATCHED_TOPIC, event.getRideId(), matchedEvent);
         log.info("Ride matched event published");
+
+    }
+
+
+    /**
+     * Diver Scoring algorithm
+     *
+     * Distance: 70%
+     * Rating: 30%
+     *
+     * Score = (1/Distance) * distanceWeight + rating * ratingWeight
+     *
+     * @param drivers
+     * @return
+     */
+    private Optional<NearByDriverResponse> findBestDriver(List<NearByDriverResponse> drivers){
+
+        double distanceWt = 0.7;
+        double ratingWt = 0.3;
+
+        return drivers.stream()
+                .max(Comparator.comparingDouble(driver -> {
+                    // Distance closer -> closer = high score
+                    // 0.1 to avoid div by 0
+                    double distanceScore = 1.0/(driver.getDistanceInKm() * 0.1);
+
+                    // rating between 4.0 and 5.0 (for now)
+                    double simulatedRating = 4.0 + Math.random();
+
+                    // Final weighted score
+                    return (distanceScore * distanceWt) + (simulatedRating * ratingWt);
+                }));
 
     }
 }
