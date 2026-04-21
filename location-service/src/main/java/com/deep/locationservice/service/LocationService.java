@@ -106,6 +106,33 @@ public class LocationService {
 
 
     public List<NearByDriverResponse> getAllDrivers() {
-        log.info();
+        log.info("Fetching all Drivers!!");
+
+        // Step 1: Get all driver IDs (members of the GEO set)
+        List<String> driverIds = redisTemplate.opsForGeo().members(DRIVER_GEO_KEY);
+
+        List<NearByDriverResponse> drivers = new ArrayList<>();
+
+        if (driverIds != null && !driverIds.isEmpty()) {
+
+            // Step 2: Fetch positions for all driver IDs
+            List<Point> positions = redisTemplate.opsForGeo().position(DRIVER_GEO_KEY, driverIds.toArray());
+
+            for (int i = 0; i < driverIds.size(); i++) {
+                Point point = positions.get(i);
+
+                if (point != null) {
+                    drivers.add(new NearByDriverResponse(
+                            driverIds.get(i),
+                            point.getY(), // latitude
+                            point.getX(), // longitude
+                            0.0 // distance not applicable here
+                    ));
+                }
+            }
+        }
+
+        log.info("Total drivers found: {}", drivers.size());
+        return drivers;
     }
 }
