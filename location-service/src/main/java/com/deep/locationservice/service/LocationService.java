@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -108,15 +109,18 @@ public class LocationService {
     public List<NearByDriverResponse> getAllDrivers() {
         log.info("Fetching all Drivers!!");
 
-        // Step 1: Get all driver IDs (members of the GEO set)
-        List<String> driverIds = redisTemplate.opsForGeo().members(DRIVER_GEO_KEY);
+        // Step 1: Get all driver IDs from ZSET
+        Set<String> driverIdSet = redisTemplate.opsForZSet().range(DRIVER_GEO_KEY, 0, -1);
 
         List<NearByDriverResponse> drivers = new ArrayList<>();
 
-        if (driverIds != null && !driverIds.isEmpty()) {
+        if (driverIdSet != null && !driverIdSet.isEmpty()) {
 
-            // Step 2: Fetch positions for all driver IDs
-            List<Point> positions = redisTemplate.opsForGeo().position(DRIVER_GEO_KEY, driverIds.toArray());
+            List<String> driverIds = new ArrayList<>(driverIdSet);
+
+            // Step 2: Fetch positions
+            List<Point> positions = redisTemplate.opsForGeo()
+                    .position(DRIVER_GEO_KEY, driverIds.toArray(new String[0]));
 
             for (int i = 0; i < driverIds.size(); i++) {
                 Point point = positions.get(i);
@@ -126,7 +130,7 @@ public class LocationService {
                             driverIds.get(i),
                             point.getY(), // latitude
                             point.getX(), // longitude
-                            0.0 // distance not applicable here
+                            0.0
                     ));
                 }
             }
