@@ -35,7 +35,7 @@ public class LocationController {
         return ResponseEntity.ok(locationService.findNearByDrivers(latitude, longitude, radius));
     }
 
-    //driver goes offline
+    //driver goes offline --remove the driver
     @DeleteMapping("/drivers/{driverId}")
     public ResponseEntity<String> removeDriverByDriverId(@PathVariable String driverId){
         locationService.removeDriverByDriverId(driverId);
