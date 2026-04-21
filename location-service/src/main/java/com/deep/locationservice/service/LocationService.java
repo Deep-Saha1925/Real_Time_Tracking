@@ -105,4 +105,7 @@ public class LocationService {
     }
 
 
+    public List<NearByDriverResponse> getAllDrivers() {
+        log.info();
+    }
 }

@@ -18,6 +18,12 @@ public class LocationController {
 
     private final LocationService locationService;
 
+    // Get All drivers
+    @GetMapping("/drivers")
+    public ResponseEntity<List<NearByDriverResponse>> getAllDrivers(){
+        return ResponseEntity.ok(locationService.getAllDrivers());
+    }
+
     // Every 3 sec
     @PostMapping("/drivers/update")
     public ResponseEntity<String> updateDriverLocation(@RequestBody DriverLocationRequest driverLocationRequest){
