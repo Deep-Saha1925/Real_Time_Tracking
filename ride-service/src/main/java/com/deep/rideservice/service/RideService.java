@@ -53,13 +53,13 @@ public class RideService {
                 savedRide.getPickupLatitude(),
                 savedRide.getPickupLongitude(),
                 savedRide.getPickupAddress(),
-                savedRide.getPickupLatitude(),
+                savedRide.getDropLatitude(),
                 savedRide.getDropLongitude(),
                 savedRide.getDropAddress()
         );
 
         kafkaTemplate.send(RIDE_REQUESTED_TOPIC, savedRide.getId(), event);
-        log.info("Ride request published to kafka for ride: {}", savedRide.getId());
+        log.info("Ride request published to Kafka for ride: {}", savedRide.getId());
 
         // Update status to matching
         savedRide.setStatus(RideStatus.MATCHING);
@@ -141,7 +141,7 @@ public class RideService {
                 ride.getPickupLatitude(),
                 ride.getPickupLongitude(),
                 ride.getPickupAddress(),
-                ride.getPickupLatitude(),
+                ride.getDropLatitude(),
                 ride.getDropLongitude(),
                 ride.getDropAddress(),
                 ride.getStatus(),
